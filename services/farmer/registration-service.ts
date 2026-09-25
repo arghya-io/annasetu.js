@@ -84,7 +84,14 @@ export async function submitRegistration(input: RegistrationSubmission): Promise
   const supabase = createClient();
   const { data, error } = await supabase.rpc('submit_farmer_registration', { p_payload: payload });
   if (error) {
-    return { ok: false, error: rpcErrorMessage(error.message, 'Could not submit your registration. Please try again.') };
+    // TEMPORARY — remove this console.error and the raw message once the
+    // real cause is found; rpcErrorMessage() already strips it from what's
+    // shown to the farmer below, this is only visible in Vercel's logs.
+    console.error('submit_farmer_registration failed:', error);
+    return {
+      ok: false,
+      error: rpcErrorMessage(error.message, `Could not submit your registration. [debug: ${error.message}]`),
+    };
   }
   return { ok: true, applicationId: String(data) };
 }
