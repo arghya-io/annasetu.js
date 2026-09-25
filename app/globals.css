@@ -1,0 +1,173 @@
+/* AnnaSetu visual system — calm ambient motion + accessible liquid glass. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 165 25% 97%;
+    --foreground: 205 25% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 205 25% 14%;
+    --primary: 189 58% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 180 20% 94%;
+    --secondary-foreground: 205 25% 14%;
+    --accent: 32 63% 46%;
+    --accent-foreground: 40 40% 98%;
+    --muted: 180 20% 95%;
+    --muted-foreground: 205 12% 42%;
+    --destructive: 4 62% 45%;
+    --destructive-foreground: 40 40% 98%;
+    --border: 190 18% 89%;
+    --input: 190 18% 89%;
+    --ring: 189 58% 30%;
+    --radius: 0.875rem;
+    --glass-bg: 0 0% 100%;
+    --glass-bg-alpha: 0.64;
+    --glass-border-alpha: 0.72;
+    --glass-blur: 18px;
+    --glass-deep-bg: 189 45% 16%;
+    --glass-deep-bg-alpha: 0.82;
+  }
+
+  :root[data-theme='dark'] {
+    --background: 200 20% 8%;
+    --foreground: 165 20% 92%;
+    --card: 200 16% 11%;
+    --card-foreground: 165 20% 92%;
+    --primary: 189 55% 55%;
+    --primary-foreground: 200 30% 10%;
+    --secondary: 200 14% 15%;
+    --secondary-foreground: 165 20% 92%;
+    --accent: 32 63% 55%;
+    --accent-foreground: 32 40% 10%;
+    --muted: 200 14% 15%;
+    --muted-foreground: 165 8% 65%;
+    --destructive: 4 55% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 14% 20%;
+    --input: 200 14% 20%;
+    --ring: 189 55% 55%;
+    --glass-bg: 200 16% 14%;
+    --glass-bg-alpha: 0.58;
+    --glass-border-alpha: 0.18;
+    --glass-deep-bg-alpha: 0.86;
+  }
+
+  * { @apply border-border; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    overflow-x: hidden;
+  }
+
+  ::selection { background: hsl(var(--primary) / 0.18); }
+}
+
+@layer components {
+  .glass,
+  .glass-panel {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(135deg, hsl(var(--glass-bg) / var(--glass-bg-alpha)), hsl(var(--glass-bg) / calc(var(--glass-bg-alpha) - 0.08)));
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.35);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.35);
+    border: 1px solid hsl(0 0% 100% / var(--glass-border-alpha));
+    box-shadow: 0 10px 34px rgb(15 45 50 / 0.07), inset 0 1px 0 hsl(0 0% 100% / 0.42);
+  }
+
+  .glass::before,
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(circle at 12% 0%, hsl(0 0% 100% / 0.2), transparent 34%);
+    opacity: 0.8;
+  }
+
+  .glass-panel {
+    transition: transform 220ms cubic-bezier(.22, 1, .36, 1), box-shadow 220ms ease, border-color 220ms ease;
+  }
+
+  .glass-panel:hover {
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.24);
+    box-shadow: 0 16px 42px rgb(15 45 50 / 0.1), inset 0 1px 0 hsl(0 0% 100% / 0.5);
+  }
+
+  .glass-deep {
+    background: hsl(var(--glass-deep-bg) / var(--glass-deep-bg-alpha));
+    backdrop-filter: blur(20px) saturate(1.25);
+    -webkit-backdrop-filter: blur(20px) saturate(1.25);
+    border-bottom: 1px solid hsl(0 0% 100% / 0.1);
+  }
+
+  .ambient-blob {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 9999px;
+    filter: blur(96px);
+    will-change: transform;
+    animation: ambient-drift 22s ease-in-out infinite alternate;
+  }
+
+  .ambient-blob:nth-child(3) { animation-delay: -8s; animation-duration: 28s; }
+  .ambient-blob:nth-child(4) { animation-delay: -14s; animation-duration: 25s; }
+
+  .page-enter { animation: page-enter 280ms cubic-bezier(.22, 1, .36, 1) both; }
+
+  .shadow-soft {
+    box-shadow: 0 1px 2px rgb(15 45 50 / 0.04), 0 8px 24px rgb(15 45 50 / 0.06);
+  }
+}
+
+@layer utilities {
+  .font-heading { font-family: var(--font-outfit), var(--font-inter), system-ui, sans-serif; }
+  .font-body { font-family: var(--font-inter), system-ui, sans-serif; }
+
+  @keyframes ambient-drift {
+    0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+    50% { transform: translate3d(4%, 3%, 0) scale(1.06); }
+    100% { transform: translate3d(-3%, 5%, 0) scale(0.98); }
+  }
+
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes annasathi-wave {
+    0%, 100% { height: 6px; }
+    50% { height: 22px; }
+  }
+
+  .annasathi-wave-bar { animation: annasathi-wave 1.1s ease-in-out infinite; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .ambient-blob { filter: blur(72px); opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce), (max-width: 360px) {
+  .ambient-blob { animation: none; }
+}
+
+@media print {
+  .ambient-blob, .glass::before, .glass-panel::before { display: none !important; }
+}
